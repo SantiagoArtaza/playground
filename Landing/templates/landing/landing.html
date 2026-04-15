@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Landing Page{% endblock %}
+
+{% block content %} 
+    <h1>Welcome to the Landing Page</h1>
+    <h2>Hello, {{ name| upper }}!</h2>
+    <p>You are {{ age }} years old.</p>
+    <p>Fecha: {{ date |date:"d/m/Y" }}</p>
+    
+    {%if age >= 18 %}
+    <p>You're an adult.</p>
+
+        {%else%}
+            <p>You're a minor.</p>
+        {%endif%}
+    <P>Mi stack de desarrollo es: </P>
+
+    <ul>
+        {%for tool in stack %}
+            <li><a href="{% url 'stack' tool.name %}">{{ tool.name }}</a></li>
+
+            {%empty%}
+                <p>No items in the stack.</p>
+        {% endfor %}
+    </ul>
+{% endblock %}
