@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Author(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100) 
     birth_date = models.DateField(null=True, blank=True)
     def __str__(self):
         return self.name
@@ -15,3 +15,5 @@ class Book(models.Model):
     isbn = models.CharField(max_length=20, unique=True)
     def __str__(self):
         return self.title
+    
+#book1 = Book.objects.create(title="1984", published_date="1949-06-08", author= orwell,pages=300 ,isbn="123455656")
