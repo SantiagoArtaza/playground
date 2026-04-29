@@ -1,6 +1,11 @@
+from symtable import Class
+
 from django.db import models
+from django.contrib.auth import get_user_model
 
 # Create your models here.
+User = get_user_model()
+
 class Author(models.Model):
     name = models.CharField(max_length=100) 
     birth_date = models.DateField(null=True, blank=True)
@@ -24,7 +29,14 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
-
+class Review(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
+    reviewer = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='reviews')
+    rating = models.PositiveIntegerField()
+    comment = models.TextField(null=True, blank=True)
+    createated_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.reviewer.username} - {self.book.title} ({self.rating}/5)"
     
     
 #book1 = Book.objects.create(title="1984", published_date="1949-06-08", author= orwell,pages=300 ,isbn="123455656")
