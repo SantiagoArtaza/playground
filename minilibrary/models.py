@@ -25,7 +25,10 @@ class Book(models.Model):
         Author, on_delete=models.CASCADE, related_name='books') # related_name allows us to access the books of an author using author.books.all
     pages = models.IntegerField(null=True, blank=True)
     isbn = models.CharField(max_length=20, unique=True)
+    
     genres=models.ManyToManyField(Genre,related_name='books') #related name permite acceder a libros desde generos
+    Recommended_by = models.ManyToManyField(User, through='Recommendation', related_name='recommended_books', blank=True)
+    #related name permite acceder a libros recomendados por un usuario
     def __str__(self):
         return self.title
 
@@ -38,5 +41,21 @@ class Review(models.Model):
     def __str__(self):
         return f"{self.reviewer.username} - {self.book.title} ({self.rating}/5)"
     
+class Loan(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='loans')
+    borrower = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='loans')
+    loan_date = models.DateField(auto_now_add=True)
+    return_date = models.DateField(null=True, blank=True)
+    def __str__(self):
+        return f"{self.borrower.username} - {self.book.title} (Loaned on {self.loan_date})"
     
+class Recommendation(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='recommendations')
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='recommendations')
+    comment = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta: #class de configuracion de la tabla, en este caso para evitar que un usuario recomiende el mismo libro mas de una vez
+        unique_together = ('book', 'user') # Un usuario solo puede recomendar un libro una vez
+    def __str__(self):
+        return f"{self.user.username} recommends {self.book.title}"
 #book1 = Book.objects.create(title="1984", published_date="1949-06-08", author= orwell,pages=300 ,isbn="123455656")
